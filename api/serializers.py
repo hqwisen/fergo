@@ -4,6 +4,7 @@ from api.models import Task
 
 
 class TaskSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=True, allow_blank=False, max_length=100)
 
     def create(self, validated_data):
