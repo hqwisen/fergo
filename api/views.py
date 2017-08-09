@@ -1,28 +1,42 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.models import Project
+from api.models import Project, FergoUser, ProjectRelation
 
 
 class ProjectsCollection(APIView):
-
-    def get(self, request):
-        print()
-        user_id = request.query_params.get('user_id', None)
-        response_json = {}
+    def handle_user_errors(self, user_id):
+        # if not FergoUser.objects.exists(user_id=user_id):
         status_code = None
         if user_id is None:
+            title = 'No user given.'
             status_code = 400
+        elif not FergoUser.objects.filter(id=user_id).exists():
+            title = "User doesn't exist."
+            status_code = 400
+        if status_code is None:
+            return None
+        else:
             errors = {
-                'title': 'Bad user',
-                'detail': 'No user given.',
+                'title': title,
                 'status': status_code
             }
-            response_json['errors'] = errors
-        else:
-            data = []
-            for project in Project.objects.all():
-                data.append({'type': 'project', 'id': project.id})
-            response_json['data'] = data
+            return errors
+
+    def fetch_projects(self, user_id):
+        data = []
+        for prel in ProjectRelation.objects.filter(user_id=user_id):
+            data.append({'type': 'project', 'id': prel.project_id})
+        return data
+
+    def get(self, request):
+        response_json = {}
+        user_id = request.query_params.get('user_id', None)
+        errors = self.handle_user_errors(user_id)
+        if errors is None:
+            response_json['data'] = self.fetch_projects(user_id)
             status_code = 200
+        else:
+            response_json['errors'] = errors
+            status_code = errors['status']
         return Response(response_json, status=status_code)
