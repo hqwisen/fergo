@@ -1,14 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.models import Project, FergoUser, ProjectRelation
+from api.models import FergoUser, ProjectRelation
 
 
 class ProjectsCollection(APIView):
     def handle_user_errors(self, user_id):
         # if not FergoUser.objects.exists(user_id=user_id):
         status_code = None
-        if user_id is None:
+        if user_id is None or (user_id.__class__ == str and len(user_id.strip()) == 0):
             title = 'No user given.'
             status_code = 400
         elif not FergoUser.objects.filter(id=user_id).exists():
