@@ -24,9 +24,17 @@ class Task(models.Model):
 
 
 class ProjectRelation(models.Model):
-    project = models.ForeignKey(Project, blank=False, null=True)
+    object = models.ForeignKey(Project, blank=False, null=True)
     user = models.ForeignKey(FergoUser, blank=False, null=True)
     relation_type = models.IntegerField(default=settings.PROJECT_RELATION['owned'])
 
     class Meta:
-        unique_together = (("project", "user"),)
+        unique_together = (("object", "user"),)
+
+class TaskRelation(models.Model):
+    object = models.ForeignKey(Task, blank=False, null=True)
+    user = models.ForeignKey(FergoUser, blank=False, null=True)
+    relation_type = models.IntegerField(default=settings.TASK_RELATION['owned'])
+
+    class Meta:
+        unique_together = (("object", "user"),)
