@@ -27,7 +27,7 @@ TASK_SETTINGS = {
 }
 
 PROJECT_SETTINGS = {
-    'name_max_length': 20
+    'name_max_length': 50
 }
 
 PROJECT_RELATION = {

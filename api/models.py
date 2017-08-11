@@ -25,6 +25,9 @@ class Task(models.Model):
     name = models.CharField(max_length=settings.TASK_SETTINGS['name_max_length'], blank=False)
     project = models.ForeignKey(Project, blank=False, null=True)
 
+    class JSONAPIMeta:
+        resource_name = "task"
+
 
 class ProjectRelation(models.Model):
     object = models.ForeignKey(Project, blank=False, null=True)

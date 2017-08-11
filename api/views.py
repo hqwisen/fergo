@@ -9,7 +9,7 @@ from api.serializers import ProjectSerializer, TaskSerializer
 logger = logging.getLogger(__name__)
 
 
-class RelationAPIView(generics.ListAPIView):
+class RelationAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         """
