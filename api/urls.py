@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from api.views import ProjectsCollection, TasksCollection
+from api.views import ProjectCollection, TaskCollection
 
 urlpatterns = [
-    url(r'projects', ProjectsCollection.as_view()),
-    url(r'tasks', TasksCollection.as_view()),
+    url(r'projects', ProjectCollection.as_view()),
+    url(r'tasks', TaskCollection.as_view()),
 
 ]
