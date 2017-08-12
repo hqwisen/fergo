@@ -1,6 +1,6 @@
 from rest_framework_json_api import serializers
 
-from api.models import Project, Task, ProjectRelation
+from api.models import Project, Task
 
 
 class ProjectSerializer(serializers.ModelSerializer):

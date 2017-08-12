@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class RelationAPIView(generics.ListCreateAPIView):
-
     def get_queryset(self):
         """
         Filter the relation objects with the user_id
@@ -52,4 +51,3 @@ class TaskCollection(RelationAPIView):
             else:
                 queryset = queryset.filter(project_id=project_id)
         return queryset
-
