@@ -1,6 +1,7 @@
 import logging
 
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from api import utils
 from api.models import Task, Project, ProjectRelation, TaskRelation
@@ -10,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class RelationAPIView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get_queryset(self):
         """
         Filter the relation objects with the user_id
