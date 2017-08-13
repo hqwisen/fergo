@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/fergo.iml" filepath="$PROJECT_DIR$/.idea/fergo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fergo-server.iml" filepath="$PROJECT_DIR$/.idea/fergo-server.iml" />
     </modules>
   </component>
 </project>
