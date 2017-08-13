@@ -2,12 +2,12 @@ import logging
 
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
-from rest_framework.exceptions import APIException, NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 
 from api import utils
 from api.models import Task, Project, ProjectRelation, TaskRelation
-from api.serializers import ProjectSerializer, TaskSerializer
+from api.serializers import ProjectSerializer, TaskSerializer, ProjectRelationSerializer, TaskRelationSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +33,21 @@ class RelationAPIView(generics.ListCreateAPIView):
         queryset = self.model_class.objects.filter(id__in=object_ids)
         return queryset
 
+    def create(self, request, *args, **kwargs):
+        response = super(RelationAPIView, self).create(request, args, kwargs)
+        self.create_relation(response.data['id'])
+        return response
+
+    def create_relation(self, object_id):
+        utils.create_relation(self.relation_class, self.relation_serializer_class,
+                              object_id, self.request.user.id)
+
 
 class ProjectCollection(RelationAPIView):
     model_class = Project
     serializer_class = ProjectSerializer
     relation_class = ProjectRelation
+    relation_serializer_class = ProjectRelationSerializer
     pagination_class = None
 
     def create(self, request, *args, **kwargs):
@@ -52,6 +62,7 @@ class TaskCollection(RelationAPIView):
     model_class = Task
     serializer_class = TaskSerializer
     relation_class = TaskRelation
+    relation_serializer_class = TaskRelationSerializer
     pagination_class = None
 
     def get_queryset(self):
