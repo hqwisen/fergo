@@ -1,6 +1,8 @@
 import logging
 
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
+from rest_framework.exceptions import APIException, NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 
 from api import utils
@@ -19,8 +21,13 @@ class RelationAPIView(generics.ListCreateAPIView):
         given as a request parameter
         :return: queryset of 'model_class' objects
         """
-        # user_id = utils.get_int_param(self.request, 'user_id')
-        user_id = utils.get_int_param(self.request, 'user_id')
+
+        # Since IsAuthenticated is in permission_classes -> request.user != None
+        if not self.request.user or isinstance(self.request.user, AnonymousUser):
+            # This should never happened, and should be catch by 'permission_classes'
+            raise NotAuthenticated
+        logger.debug("user is: %s" % self.request.user)
+        user_id = self.request.user.id
         relations = self.relation_class.objects.filter(user_id=user_id)
         object_ids = [relation.object_id for relation in relations]
         queryset = self.model_class.objects.filter(id__in=object_ids)
@@ -32,6 +39,13 @@ class ProjectCollection(RelationAPIView):
     serializer_class = ProjectSerializer
     relation_class = ProjectRelation
     pagination_class = None
+
+    def create(self, request, *args, **kwargs):
+        request.data['creator'] = {
+            'type': 'fergo_user',
+            'id': self.request.user.id
+        }
+        return super(ProjectCollection, self).create(request, args, kwargs)
 
 
 class TaskCollection(RelationAPIView):
